@@ -1,0 +1,15 @@
+function [location] = calPos(matrix)
+
+imsize = size(matrix);
+xPos = [];
+yPos = [];
+for j = 1:imsize(1)
+    for i = 1:imsize(2)
+        tbf = I2(j,i);
+        if tbf ~=0
+            xPos = s
+            return;
+        end
+    end    
+end
+end
