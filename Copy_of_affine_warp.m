@@ -1,6 +1,6 @@
 function Iout=affine_warp(Iin,M)
 % Affine transformation function (Rotation, Translation, Resize)
-% Iin = rgb2gray(Iin);
+Iin = rgb2gray(Iin);
 % Make all x,y indices
 [x,y]=ndgrid(0:size(Iin,1)-1,0:size(Iin,2)-1);
 

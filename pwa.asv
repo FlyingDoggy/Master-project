@@ -1,7 +1,7 @@
 clc;clear; close all;
 run('SetPathLocal.m');
 dir = 'Img/';
-folder = 'house/';
+folder = 'queens/';
 imFormat = '.png';
 imRefName = 1;
 imTarName = 2;
@@ -11,11 +11,11 @@ imTarName = 2;
 refI = strcat(dir,folder,num2str(imRefName),imFormat);
 tarI = strcat(dir,folder,num2str(imTarName),imFormat);
 
-I1=im2double(imread(refI));
-I2=im2double(imread(tarI));
+I1=imcrop(im2double(imread(refI)),[0,0,1700,800]);
+I2=imcrop(im2double(imread(tarI)),[0,0,800,1700]);
 numOfStrongesrt = 300;
 pieceHeight = 2;
-pieceWidth = 4;
+pieceWidth = 5;
 piece = pieceHeight*pieceWidth;
 imsize = size(I1);
 im1 = {};
@@ -31,11 +31,15 @@ imtar = [];
 switch(folder)
     case 'queens/'
         format = '%d %d %d %d %d %d %d %d';
+        allGT = loadGT(dir,folder,8,format);
+
 
 %House
-    case ''
-format = '%d %d %d %d %d %d %d %d %d %d %d %d %d';
-allGT = loadGT(dir,folder,13,format);
+    case 'house/'
+        format = '%d %d %d %d %d %d %d %d %d %d %d %d %d';
+        allGT = loadGT(dir,folder,13,format);
+
+end
 
 refGT = allGT{imRefName};
 tarGT = allGT{imTarName};
@@ -98,7 +102,6 @@ rmsem2 = (piece);
 
 %% detect, extract, calcuate affine and warp
 parfor i = 1:piece
-    i
     [Pos1{i},Pos2{i}] = extractFeature(im1{i},im2{i},numOfStrongesrt);
     
     %     showImg(im1{i},im2{i},Pos1{i},Pos2{i});
@@ -127,7 +130,7 @@ parfor i = 1:piece
 %     [ allDis{i},diffm(i),rmsem(i) ] = evaResult(im1{i},I2_warped{i},numOfStrongesrt);
 %     [~, diffm2(i),rmsem2(i) ] = evaResult(im1{i},I2_warped2{i},numOfStrongesrt);
     
-    
+    i
 end
 
 %% combine the images
@@ -161,13 +164,15 @@ end
 for i = 1:length(whiteImage)
     whiteImage{i} = affine_warp(whiteImage{i},M{indexOfPatch(i)});
     estimatedTar(i,:) = calPos(whiteImage{i});  
-    estimatedTar2(i,:) = M{indexOfPatch(i)}*tarGT(i,:)';
+    estimatedTar2(i,:) = Mtest{indexOfPatch(i)}*tarGT(i,:)';
 
 end
-% newRefGT(:,3) = [];
-[ diffGT, allDis ] = evaluation( refGT,estimatedTar2 );
+[diffGTOri,allDisOri] = evaluation(refGT,estimatedTar2);
+rmseGTOri = sqrt(immse(refGT,estimatedTar2));
+newRefGT(:,3) = [];
+[ diffGT, allDis ] = evaluation( newRefGT,estimatedTar );
 
-rmseGT = sqrt(immse(refGT,estimatedTar2));
+rmseGT = sqrt(immse(newRefGT,estimatedTar));
 
 [allDisM, diffM,rmseM,test1,test2 ] = evaResult(imOutRef,imOutTar,numOfStrongesrt);
 figure;

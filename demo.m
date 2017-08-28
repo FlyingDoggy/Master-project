@@ -14,7 +14,7 @@ im2 = strcat(dir,folder,'2',imFormat);
 
 I1=im2double(imread(im1));
 I2=im2double(imread(im2));
-numOfStrongesrt = 150;
+numOfStrongesrt = 300;
 
 
 

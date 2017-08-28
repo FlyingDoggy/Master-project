@@ -1,7 +1,7 @@
 function [ results ] = rejectMismatch( Pos1,Pos2 )
 %% set RANSAC parameter
 % number of points
-N = 300;
+N = 400;
 % inilers percentage
 p = 0.25;
 % noise
@@ -13,8 +13,8 @@ options.sigma = sigma;
 options.validateMSS_fun = @validateMSS_homography;
 options.est_fun = @estimate_homography;
 options.man_fun = @error_homography;
-options.mode = 'MSAC';
-% options.mode = 'RANSAC';
+% options.mode = 'MSAC';
+options.mode = 'RANSAC';
 
 options.Ps = [];
 options.notify_iters = [];

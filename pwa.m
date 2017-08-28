@@ -4,7 +4,7 @@ dir = 'Img/';
 folder = 'queens/';
 imFormat = '.png';
 imRefName = 1;
-imTarName = 2;
+imTarName = 5;
 
 
 
@@ -13,7 +13,7 @@ tarI = strcat(dir,folder,num2str(imTarName),imFormat);
 
 I1=im2double(imread(refI));
 I2=im2double(imread(tarI));
-numOfStrongesrt = 300;
+numOfStrongesrt = 100;
 pieceHeight = 2;
 pieceWidth = 5;
 piece = pieceHeight*pieceWidth;
@@ -30,8 +30,8 @@ imtar = [];
 %queens
 switch(folder)
     case 'queens/'
-        format = '%d %d %d %d %d %d %d %d';
-        allGT = loadGT(dir,folder,8,format);
+        format = '%d %d %d %d %d %d %d %d %d %d %d %d %d %d %d';
+        allGT = loadGT(dir,folder,15,format);
 
 
 %House
@@ -102,7 +102,6 @@ rmsem2 = (piece);
 
 %% detect, extract, calcuate affine and warp
 parfor i = 1:piece
-    i
     [Pos1{i},Pos2{i}] = extractFeature(im1{i},im2{i},numOfStrongesrt);
     
     %     showImg(im1{i},im2{i},Pos1{i},Pos2{i});
@@ -131,7 +130,7 @@ parfor i = 1:piece
 %     [ allDis{i},diffm(i),rmsem(i) ] = evaResult(im1{i},I2_warped{i},numOfStrongesrt);
 %     [~, diffm2(i),rmsem2(i) ] = evaResult(im1{i},I2_warped2{i},numOfStrongesrt);
     
-    
+    i
 end
 
 %% combine the images
@@ -163,13 +162,13 @@ end
 %% evaluation
 
 for i = 1:length(whiteImage)
-    whiteImage{i} = affine_warp(whiteImage{i},M{indexOfPatch(i)});
+    whiteImage{i} = Copy_of_affine_warp(whiteImage{i},M{indexOfPatch(i)});
     estimatedTar(i,:) = calPos(whiteImage{i});  
-    estimatedTar2(i,:) = Mtest{indexOfPatch(i)}*tarGT(i,:)';
+    estimatedTar2(i,:) = Mtest{indexOfPatch(i)}*newTarGT(i,:)';
 
 end
-[diffGTOri,allDisOri] = evaluation(refGT,estimatedTar2);
-rmseGTOri = sqrt(immse(refGT,estimatedTar2));
+[diffGTAffine,allDisAffine] = evaluation(newRefGT,estimatedTar2);
+rmseGTAffine = sqrt(immse(newRefGT,estimatedTar2));
 newRefGT(:,3) = [];
 [ diffGT, allDis ] = evaluation( newRefGT,estimatedTar );
 
